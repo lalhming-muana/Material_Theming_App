@@ -14,24 +14,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.material_theming_app.ui.theme.Material_Theming_AppTheme
+import com.example.material_theming_app.ui.theme.Material_theming_AppTheme
 import com.example.material_theming_app.data.Dog
 import com.example.material_theming_app.data.dogs
-import com.example.material_theming_app.ui.theme.Material_Theming_AppTheme
+import com.example.material_theming_app.ui.theme.Material_theming_AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-           Material_Theming_AppTheme {
+           Material_theming_AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize()
@@ -50,7 +54,7 @@ class MainActivity : ComponentActivity() {
 fun WoofApp() {
     LazyColumn {
         items(dogs) {
-            DogItem(dog = it)
+            DogItem(dog = it, modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)))
         }
     }
 }
@@ -66,6 +70,7 @@ fun DogItem(
     dog: Dog,
     modifier: Modifier = Modifier
 ) {
+    Card(modifier = modifier){
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -73,6 +78,7 @@ fun DogItem(
     ) {
         DogIcon(dog.imageResourceId)
         DogInformation(dog.name, dog.age)
+    }
     }
 }
 
@@ -90,12 +96,13 @@ fun DogIcon(
     Image(
         modifier = modifier
             .size(dimensionResource(R.dimen.image_size))
-            .padding(dimensionResource(R.dimen.padding_small)),
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clip(MaterialTheme.shapes.small),
         painter = painterResource(dogIcon),
 
         // Content Description is not needed here - image is decorative, and setting a null content
         // description allows accessibility services to skip this element during navigation.
-
+        contentScale = ContentScale.Crop,
         contentDescription = null
     )
 }
@@ -116,10 +123,12 @@ fun DogInformation(
     Column(modifier = modifier) {
         Text(
             text = stringResource(dogName),
+            style = MaterialTheme.typography.displayMedium,
             modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
         )
         Text(
             text = stringResource(R.string.years_old, dogAge),
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -130,7 +139,15 @@ fun DogInformation(
 @Preview
 @Composable
 fun WoofPreview() {
-    Material_Theming_AppTheme(darkTheme = false) {
+    Material_theming_AppTheme(darkTheme = false) {
+        WoofApp()
+    }
+}
+
+@Preview
+@Composable
+fun DarkThemeWoofPreview() {
+    Material_theming_AppTheme(darkTheme = true) {
         WoofApp()
     }
 }
